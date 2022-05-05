@@ -1,3 +1,4 @@
+from time import timezone
 import uuid
 from django.db import models
 
@@ -24,19 +25,18 @@ class Mailbox(models.Model):
 class Template(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=255)
-    port = models.TextField()
-    attachment = models.FileField()
+    text = models.TextField()
+    attachment = models.FileField(blank=True, null=True)
     date = models.DateTimeField()
     last_update = models.DateTimeField()
 
 class Email(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    mailbox = models.CharField(max_length=255)
     mailbox = models.ForeignKey(Mailbox, on_delete=models.CASCADE)
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
     to = ArrayField(models.CharField(max_length=255))
     cc = ArrayField(models.CharField(max_length=255))
     bcc = ArrayField(models.CharField(max_length=255))
     reply_to = models.EmailField()
-    sent_date = models.DateTimeField
-    date = models.DateTimeField('data_utworzenia', auto_now=True)
+    sent_date = models.DateTimeField()
+    date = models.DateTimeField()
