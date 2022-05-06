@@ -40,3 +40,7 @@ class Email(models.Model):
     reply_to = models.EmailField()
     sent_date = models.DateTimeField()
     date = models.DateTimeField()
+
+    def __str__(self):
+        """Django uses when it needs to convert the object to a string"""
+        return str(self.id)
