@@ -1,12 +1,13 @@
 from django.shortcuts import render
-
+import logging
 # Create your views here.
 from api.models import Email, Mailbox, Template
+
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Prefetch
+
 from api.serializers import MailboxSerializer, EmailSerializer, TemplateSerializer
 
 
