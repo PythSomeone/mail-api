@@ -8,7 +8,9 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 
+
 from api.serializers import MailboxSerializer, EmailSerializer, TemplateSerializer
+from api.tasks import send_email_task
 
 
 class MailboxViewSet(viewsets.ModelViewSet):
@@ -24,21 +26,23 @@ class EmailViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
     queryset = Email.objects.all()
+    mailbox = Mailbox.objects.all()
+    template = Template.objects.all()
     serializer_class = EmailSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'delete', 'post']
-    # def destroy(self, request, *args, **kwargs):
-    #     logedin_user = request.user
-    #     if(logedin_user == "admin"):
-    #         email = self.get_object()
-    #         email.delete()
-    #         response_message = {"message": "Item has been deleted"}
-    #     else:
-    #         response_message = {"message": "Not Allowed"}
 
-    #     return Response(response_message)
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        mail = Email.objects.filter(pk=instance.id)
+        if instance.mailbox.is_active:
+            send_email_task.delay(instance.id)
 
-
+        else:
+            # logger.error('Failed to send the email with id: '+ str(self.id) 
+            # + ' from mailbox with id: '+ str(self.mailbox.id)
+            # + ', mailbox is not active')
+            pass
 
 class TemplateViewSet(viewsets.ModelViewSet):
     """

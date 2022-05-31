@@ -4,6 +4,8 @@ from django.db import models
 
 from django.contrib.postgres.fields import ArrayField
 
+# logger = logging.getLogger(django)
+
 # Create your models here.
  
 class Mailbox(models.Model):
@@ -34,13 +36,13 @@ class Email(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     mailbox = models.ForeignKey(Mailbox, on_delete=models.CASCADE)
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
-    to = ArrayField(models.CharField(max_length=255))
-    cc = ArrayField(models.CharField(max_length=255))
-    bcc = ArrayField(models.CharField(max_length=255))
+    to = ArrayField(models.CharField(max_length=255), default=list, null=True)
+    cc = ArrayField(models.CharField(max_length=255), default=list, null=True)
+    bcc = ArrayField(models.CharField(max_length=255), default=list, null=True)
     reply_to = models.EmailField()
     sent_date = models.DateTimeField()
     date = models.DateTimeField()
 
     def __str__(self):
-        """Django uses when it needs to convert the object to a string"""
         return str(self.id)
+
