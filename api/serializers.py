@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User, Group
 from api.models import Email, Mailbox, Template
 from rest_framework import serializers
 

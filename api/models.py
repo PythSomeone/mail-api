@@ -3,12 +3,7 @@ import uuid
 from django.db import models
 
 from django.contrib.postgres.fields import ArrayField
-from django.core import serializers
 
-
-import logging
-
-from api.tasks import send_email_task
 # logger = logging.getLogger(django)
 
 # Create your models here.
@@ -51,20 +46,3 @@ class Email(models.Model):
     def __str__(self):
         return str(self.id)
 
-    # def save(self):
-    #     if self.id:
-    #         old_foo = Foo.objects.get(pk=self.id)
-    #         if old_foo.YourBooleanField == False and self.YourBooleanField == True:
-    #             send_email()
-    #     super(Foo, self).save()
-
-    def save(self, *args, **kwargs):
-        super(Email, self).save(*args, **kwargs)
-        if self.mailbox.is_active:
-            send_email_task.delay(serializers.serialize('json', Email.objects.filter(pk=self.id)))
-        else:
-            # logger.error('Failed to send the email with id: '+ str(self.id) 
-            # + ' from mailbox with id: '+ str(self.mailbox.id)
-            # + ', mailbox is not active')
-            pass
-        super(Email, self).save()
