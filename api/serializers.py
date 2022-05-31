@@ -11,18 +11,21 @@ class MailboxSerializer(serializers.HyperlinkedModelSerializer):
             'port',
             'login',
             'password',
+            'email_from',
             'use_ssl',
             'is_active',
             'date',
             'last_update',
             ]
+class ArrayField(serializers.ListField):
+    child = serializers.CharField(max_length=255, allow_blank=True)
 
 class EmailSerializer(serializers.HyperlinkedModelSerializer):
     sent_date = serializers.DateTimeField()
     date = serializers.DateTimeField()
     class Meta:
         model = Email
-        fields = [
+        fields = (
             'id',
             'mailbox',
             'template',
@@ -32,7 +35,7 @@ class EmailSerializer(serializers.HyperlinkedModelSerializer):
             'reply_to',
             'sent_date',
             'date',
-    ]
+        )
 
 class TemplateSerializer(serializers.HyperlinkedModelSerializer):
     date = serializers.DateTimeField()
